@@ -161,37 +161,30 @@ async fn create_matrix_session(
 async fn handle_message(
     http_client: &HttpClient,
     matrix_client: &MatrixClient,
-    e: &Raw<AnySyncTimelineEvent>,
+    ev: &Raw<AnySyncTimelineEvent>,
     room_id: OwnedRoomId,
     bot_user_id: &UserId,
 ) -> Result<(), Box<dyn Error>> {
     if let Ok(AnySyncTimelineEvent::MessageLike(AnySyncMessageLikeEvent::RoomMessage(
         SyncMessageLikeEvent::Original(m),
-    ))) = e.deserialize()
+    ))) = ev.deserialize()
+        // workaround because Conduit does not implement filtering
+        && m.sender != bot_user_id
+        && let MessageType::Text(t) = m.content.msgtype
     {
-        // workaround because Conduit does not implement filtering.
-        if m.sender == bot_user_id {
-            return Ok(());
-        }
+        println!("{}:\t{}", m.sender, t.body);
+        if t.body.to_ascii_lowercase().contains("joke") {
+            let joke = match get_joke(http_client).await {
+                Ok(joke) => joke,
+                Err(_) => "I thought of a joke... but I just forgot it.".to_owned(),
+            };
+            let joke_content = RoomMessageEventContent::text_plain(joke);
 
-        if let MessageType::Text(t) = m.content.msgtype {
-            println!("{}:\t{}", m.sender, t.body);
-            if t.body.to_ascii_lowercase().contains("joke") {
-                let joke = match get_joke(http_client).await {
-                    Ok(joke) => joke,
-                    Err(_) => "I thought of a joke... but I just forgot it.".to_owned(),
-                };
-                let joke_content = RoomMessageEventContent::text_plain(joke);
-
-                let txn_id = TransactionId::new();
-                let req = send_message_event::v3::Request::new(
-                    room_id.to_owned(),
-                    txn_id,
-                    &joke_content,
-                )?;
-                // Do nothing if we can't send the message.
-                let _ = matrix_client.send_request(req).await;
-            }
+            let txn_id = TransactionId::new();
+            let req =
+                send_message_event::v3::Request::new(room_id.to_owned(), txn_id, &joke_content)?;
+            // Do nothing if we can't send the message.
+            let _ = matrix_client.send_request(req).await;
         }
     }
 
