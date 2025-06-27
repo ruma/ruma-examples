@@ -4,18 +4,18 @@ use futures_util::future::{join, join_all};
 use http_body_util::BodyExt as _;
 use hyper_util::rt::TokioExecutor;
 use ruma::{
+    OwnedRoomId, OwnedUserId, TransactionId, UserId,
     api::client::{
         filter::FilterDefinition, membership::join_room_by_id, message::send_message_event,
         sync::sync_events,
     },
     assign, client,
     events::{
-        room::message::{MessageType, RoomMessageEventContent},
         AnySyncMessageLikeEvent, AnySyncTimelineEvent, SyncMessageLikeEvent,
+        room::message::{MessageType, RoomMessageEventContent},
     },
     presence::PresenceState,
     serde::Raw,
-    OwnedRoomId, OwnedUserId, TransactionId, UserId,
 };
 use serde_json::Value as JsonValue;
 use tokio::fs;
