@@ -4,9 +4,9 @@ use ruma::{
     api::client::{filter::FilterDefinition, sync::sync_events},
     assign,
     events::{
-        room::message::{MessageType, RoomMessageEventContent, TextMessageEventContent},
         AnySyncMessageLikeEvent, AnySyncTimelineEvent, OriginalSyncMessageLikeEvent,
         SyncMessageLikeEvent,
+        room::message::{MessageType, RoomMessageEventContent, TextMessageEventContent},
     },
     presence::PresenceState,
 };

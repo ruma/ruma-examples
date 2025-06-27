@@ -1,9 +1,9 @@
 use std::{env, process::exit};
 
 use ruma::{
+    OwnedRoomAliasId, TransactionId,
     api::client::{alias::get_alias, membership::join_room_by_id, message::send_message_event},
     events::room::message::RoomMessageEventContent,
-    OwnedRoomAliasId, TransactionId,
 };
 
 type HttpClient = ruma::client::http_client::HyperNativeTls;
