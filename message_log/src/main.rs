@@ -4,9 +4,8 @@ use ruma::{
     api::client::{filter::FilterDefinition, sync::sync_events},
     assign,
     events::{
-        AnySyncMessageLikeEvent, AnySyncTimelineEvent, OriginalSyncMessageLikeEvent,
-        SyncMessageLikeEvent,
-        room::message::{MessageType, RoomMessageEventContent, TextMessageEventContent},
+        AnySyncMessageLikeEvent, AnySyncTimelineEvent, SyncMessageLikeEvent,
+        room::message::MessageType,
     },
     presence::PresenceState,
 };
@@ -51,21 +50,15 @@ async fn log_messages(
             {
                 // Filter out the text messages
                 if let AnySyncTimelineEvent::MessageLike(AnySyncMessageLikeEvent::RoomMessage(
-                    SyncMessageLikeEvent::Original(OriginalSyncMessageLikeEvent {
-                        content:
-                            RoomMessageEventContent {
-                                msgtype:
-                                    MessageType::Text(TextMessageEventContent {
-                                        body: msg_body, ..
-                                    }),
-                                ..
-                            },
-                        sender,
-                        ..
-                    }),
+                    SyncMessageLikeEvent::Original(m),
                 )) = event
+                    && let MessageType::Text(t) = m.content.msgtype
                 {
-                    println!("{sender} in {room_id}: {msg_body}");
+                    println!(
+                        "{sender} in {room_id}: {msg_body}",
+                        sender = m.sender,
+                        msg_body = t.body
+                    );
                 }
             }
         }
