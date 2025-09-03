@@ -6,7 +6,7 @@ use ruma::{
     events::room::message::RoomMessageEventContent,
 };
 
-type HttpClient = ruma::client::http_client::HyperNativeTls;
+type HttpClient = ruma_client::http_client::HyperNativeTls;
 
 async fn hello_world(
     homeserver_url: String,
@@ -14,7 +14,7 @@ async fn hello_world(
     password: &str,
     room_alias: OwnedRoomAliasId,
 ) -> anyhow::Result<()> {
-    let client = ruma::Client::builder()
+    let client = ruma_client::Client::builder()
         .homeserver_url(homeserver_url)
         .build::<HttpClient>()
         .await?;

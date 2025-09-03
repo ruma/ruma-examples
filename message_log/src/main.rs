@@ -1,6 +1,6 @@
 use std::{env, process::exit, time::Duration};
 
-use ruma::{
+use ruma_client::ruma::{
     api::client::{filter::FilterDefinition, sync::sync_events},
     assign,
     events::{
@@ -11,14 +11,14 @@ use ruma::{
 };
 use tokio_stream::StreamExt as _;
 
-type HttpClient = ruma::client::http_client::HyperNativeTls;
+type HttpClient = ruma_client::http_client::HyperNativeTls;
 
 async fn log_messages(
     homeserver_url: String,
     username: &str,
     password: &str,
 ) -> anyhow::Result<()> {
-    let client = ruma::Client::builder()
+    let client = ruma_client::Client::builder()
         .homeserver_url(homeserver_url)
         .build::<HttpClient>()
         .await?;
