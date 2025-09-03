@@ -9,7 +9,7 @@ use ruma::{
         filter::FilterDefinition, membership::join_room_by_id, message::send_message_event,
         sync::sync_events,
     },
-    assign, client,
+    assign,
     events::{
         AnySyncMessageLikeEvent, AnySyncTimelineEvent, SyncMessageLikeEvent,
         room::message::{MessageType, RoomMessageEventContent},
@@ -30,8 +30,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-type HttpClient = client::http_client::HyperNativeTls;
-type MatrixClient = client::Client<client::http_client::HyperNativeTls>;
+type HttpClient = ruma_client::http_client::HyperNativeTls;
+type MatrixClient = ruma_client::Client<ruma_client::http_client::HyperNativeTls>;
 
 async fn run() -> Result<(), Box<dyn Error>> {
     let config = read_config()
@@ -40,7 +40,7 @@ async fn run() -> Result<(), Box<dyn Error>> {
     let http_client = hyper_util::client::legacy::Client::builder(TokioExecutor::new())
         .build(hyper_tls::HttpsConnector::new());
     let matrix_client = if let Some(state) = read_state().await.ok().flatten() {
-        ruma::Client::builder()
+        ruma_client::Client::builder()
             .homeserver_url(config.homeserver.clone())
             .access_token(Some(state.access_token))
             .http_client(http_client.clone())
@@ -128,7 +128,7 @@ async fn create_matrix_session(
     config: &Config,
 ) -> Result<MatrixClient, Box<dyn Error>> {
     if let Some(password) = &config.password {
-        let client = ruma::Client::builder()
+        let client = ruma_client::Client::builder()
             .homeserver_url(config.homeserver.clone())
             .http_client(http_client)
             .await?;
@@ -138,11 +138,13 @@ async fn create_matrix_session(
             .await
         {
             let reason = match e {
-                client::Error::AuthenticationRequired => "invalid credentials specified".to_owned(),
-                client::Error::Response(response_err) => {
+                ruma_client::Error::AuthenticationRequired => {
+                    "invalid credentials specified".to_owned()
+                }
+                ruma_client::Error::Response(response_err) => {
                     format!("failed to get a response from the server: {response_err}")
                 }
-                client::Error::FromHttpResponse(parse_err) => {
+                ruma_client::Error::FromHttpResponse(parse_err) => {
                     format!("failed to parse log in response: {parse_err}")
                 }
                 _ => e.to_string(),
