@@ -18,6 +18,7 @@ async fn log_messages(
     username: &str,
     password: &str,
 ) -> anyhow::Result<()> {
+    // Construct and log in the client.
     let client = ruma_client::Client::builder()
         .homeserver_url(homeserver_url)
         .build::<HttpClient>()
@@ -25,6 +26,7 @@ async fn log_messages(
 
     client.log_in(username, password, None, None).await?;
 
+    // Perform an initial sync to ignore messages before the bot was launched.
     let filter = FilterDefinition::ignore_all().into();
     let initial_sync_response = client
         .send_request(assign!(sync_events::v3::Request::new(), {
@@ -32,6 +34,7 @@ async fn log_messages(
         }))
         .await?;
 
+    // Launch a sync loop to listen to new messages.
     let mut sync_stream = Box::pin(client.sync(
         None,
         initial_sync_response.next_batch,
