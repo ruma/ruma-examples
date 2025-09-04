@@ -1,8 +1,8 @@
 use std::{env, process::exit};
 
 use ruma::{
-    OwnedRoomAliasId, TransactionId,
-    api::client::{alias::get_alias, membership::join_room_by_id, message::send_message_event},
+    OwnedRoomOrAliasId, TransactionId,
+    api::client::{membership::join_room_by_id_or_alias, message::send_message_event},
     events::room::message::RoomMessageEventContent,
 };
 
@@ -12,8 +12,9 @@ async fn hello_world(
     homeserver_url: String,
     username: &str,
     password: &str,
-    room_alias: OwnedRoomAliasId,
+    room_id_or_alias: OwnedRoomOrAliasId,
 ) -> anyhow::Result<()> {
+    // Construct and log in the client.
     let client = ruma_client::Client::builder()
         .homeserver_url(homeserver_url)
         .build::<HttpClient>()
@@ -22,13 +23,15 @@ async fn hello_world(
         .log_in(username, password, None, Some("ruma-example-client"))
         .await?;
 
+    // Join the room.
     let room_id = client
-        .send_request(get_alias::v3::Request::new(room_alias))
+        .send_request(join_room_by_id_or_alias::v3::Request::new(
+            room_id_or_alias.clone(),
+        ))
         .await?
         .room_id;
-    client
-        .send_request(join_room_by_id::v3::Request::new(room_id.clone()))
-        .await?;
+
+    // Send the message.
     client
         .send_request(send_message_event::v3::Request::new(
             room_id,
