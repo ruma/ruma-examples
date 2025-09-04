@@ -1,5 +1,5 @@
-A simple example to demonstrate `ruma-client` functionality. Sends "Hello
-World!" to the given room.
+A simple example to demonstrate `ruma-client` functionality. Joins the given
+room and sends "Hello World!".
 
 # Usage
 
