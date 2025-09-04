@@ -1,11 +1,5 @@
 A simple bot to demonstrate `ruma-client` functionality. Tells jokes when you ask for them.
 
-# Note on dependency versions
-
-This example was written against pre-release versions of `ruma` and
-`ruma-client-api`. Check the comments in the `[dependencies]` section of
-[`Cargo.toml`](Cargo.toml) for more information.
-
 # Usage
 
 Create a file called `config` and populate it with the following values in `key=value` format:

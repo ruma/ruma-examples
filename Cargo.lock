@@ -585,11 +585,8 @@ name = "joke_bot"
 version = "0.1.0"
 dependencies = [
  "futures-util",
- "http",
  "http-body-util",
  "hyper",
- "hyper-tls",
- "hyper-util",
  "ruma",
  "ruma-client",
  "serde_json",
