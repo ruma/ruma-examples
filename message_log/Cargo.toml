@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-ruma-client = { version = "0.16.0", features = ["client-api", "hyper-native-tls"] }
+ruma-client = { version = "0.17.0", features = ["client-api", "hyper-native-tls"] }
 
 anyhow = "1.0.37"
 tokio = { version = "1.0.1", features = ["macros", "rt"] }
