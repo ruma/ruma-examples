@@ -1,7 +1,9 @@
+# Hello world
+
 A simple example to demonstrate `ruma-client` functionality. Joins the given
 room and sends "Hello World!".
 
-# Usage
+## Usage
 
 You will need to use an existing account on a homeserver that allows login with
 a password.
