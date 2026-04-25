@@ -1,7 +1,9 @@
+# Message log
+
 A simple example to demonstrate `ruma-client` functionality. Prints all the
 received text messages to stdout.
 
-# Usage
+## Usage
 
 You will need to use an existing account on a homeserver that allows login with
 a password.

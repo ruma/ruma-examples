@@ -1,6 +1,8 @@
+# Joke bot
+
 A simple bot to demonstrate `ruma-client` functionality. Tells jokes when you ask for them.
 
-# Usage
+## Usage
 
 Create a file called `config` and populate it with the following values in `key=value` format:
 
