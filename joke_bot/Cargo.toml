@@ -5,8 +5,8 @@ edition = "2024"
 publish = false
 
 [dependencies]
-ruma = { version = "0.14.1", features = ["client-api-c", "rand"] }
-ruma-client = { version = "0.17.0", features = ["client-api", "hyper-native-tls"] }
+ruma = { version = "0.15.0", features = ["client-api-c", "rand"] }
+ruma-client = { version = "0.18.0", features = ["client-api", "hyper-native-tls"] }
 
 futures-util = { version = "0.3.21", default-features = false, features = ["std"] }
 http-body-util = "0.1.1"
